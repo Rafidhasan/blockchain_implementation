@@ -1,3 +1,5 @@
+// Package initialization
+
 const SHA256 = require('crypto-js/sha256');
 
 class Block {
@@ -11,23 +13,23 @@ class Block {
     }
 
     calculateHash() {
-        return SHA256(this.index + this.previousHash + this.timestamp + JSON.stringify(this.data)).toString();
+        return SHA256(this.index + this.previousHash + this.timestamp + JSON.stringify(this.data) + this.nonce).toString();
     }
 
     mineBlock(difficulty) {
-        while(this.hash.substring(0, difficulty) !== Array(difficulty + 1).join("0")) {
+        while(this.hash.substring(0, difficulty !== Array(difficulty + 1).join("0"))) {
             this.nonce++;
             this.hash = this.calculateHash();
         }
 
-        console.log("Block mined: " + this.hash);
+        console.log("block mined" + this.hash);
     }
 }
 
 class BlockChain{
     constructor() {
         this.chain = [this.createGenesisBlock()];
-        this.difficulty = 2;
+        this.difficulty = 0;
     }
 
     createGenesisBlock() {
@@ -38,8 +40,18 @@ class BlockChain{
         return this.chain[this.chain.length - 1];
     }
 
+    // addblock method for basic implementation
+
+    // addBlock(newBlock) {
+    //     newBlock.previousHash = this.getLatestBlock().hash;
+    //     newBlock.hash = newBlock.calculateHash();
+    //     this.chain.push(newBlock);
+    // }
+
+    // addblock method for data mining
     addBlock(newBlock) {
         newBlock.previousHash = this.getLatestBlock().hash;
+        newBlock.mineBlock(this.difficulty);
         this.chain.push(newBlock);
     }
 
@@ -63,18 +75,29 @@ class BlockChain{
 
 let cryptoCoin = new BlockChain();
 
-console.log('mining block 1...');
-console.log(cryptoCoin.addBlock(new Block(1, "29/12/1997", { amount : 4 })));
-console.log('mining block 2...');
-console.log(cryptoCoin.addBlock(new Block(2, "10/4/2016", { amount : 10 })));
-console.log('mining block 3...');
-console.log(cryptoCoin.addBlock(new Block(3, "4/6/2018", { amount : 6 })));
-console.log('mining block 4...');
-console.log(cryptoCoin.addBlock(new Block(4, "7/6/2019", { amount : 12 })));
-console.log('mining block 5...');
-console.log(cryptoCoin.addBlock(new Block(5, "1/4/2012", { amount : 2 })));
 
+// General Output
+// cryptoCoin.addBlock(new Block(1, "10/07/2017", { amount: 4 }));
+// cryptoCoin.addBlock(new Block(2, "12/07/2020", { amount: 10 }));
 
-// console.log('is valid: ' + cryptoCoin.isChainValid());
 // console.log(JSON.stringify(cryptoCoin, null, 4));
 
+
+// security checking - case 1
+
+// console.log('Is blockchain valid? ' + cryptoCoin.isChainValid());
+
+// cryptoCoin.chain[1].data = { amount: 100 };
+
+// console.log('Is blockchain valid? ' + cryptoCoin.isChainValid());
+
+
+// Prrof work: We dont want to people to create 100 and 1000 of blocks per second and spam our blockchain. 
+// There is a security issue... 
+
+
+// Proof of work: (mining)
+// console.log('mining block 1...');
+// cryptoCoin.addBlock(new Block(1, "10/07/2017", { amount: 4 }));
+// console.log('mining block 2...');
+// cryptoCoin.addBlock(new Block(2, "12/07/2020", { amount: 10 }));
